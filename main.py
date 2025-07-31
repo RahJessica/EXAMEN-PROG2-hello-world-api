@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from fastapi import FastAPI, requests
@@ -9,11 +10,12 @@ from fastapi import Response
 
 app = FastAPI()
 
+# Q1
 @app.get("/ping", status_code=status.HTTP_200_OK)
 def read_hello():
     return {"Pong"}
 
-
+#Q2
 @app.get("/home", status_code=status.HTTP_200_OK)
 def welcome_home():
     return HTMLResponse (
@@ -30,34 +32,35 @@ class WelcomeRequest(BaseModel):
 def welcome_user(data: WelcomeRequest):
     return {"message": f"Welcome {data.name}"}
 
+#Q3
+class Post (BaseModel):
+    author: str
+    title: str
+    content: str
 
-class Player (BaseModel):
-    Number: int
-    Name: str
+posts_db: List[Post] = []
 
-players_db: List[Player] = []
-
-@app.post("/players", status_code=status.HTTP_201_CREATED)
-def add_players (players: List[Player]):
-    players_db.extend(players)
-    return players_db
+@app.post("/posts", status_code=status.HTTP_201_CREATED)
+def add_players (post: List[Post]):
+    posts_db.extend(post)
+    return posts_db
 
 
 @app.get("/players", status_code=status.HTTP_200_OK)
 def read_players ():
-    return players_db
+    return posts_db
 
 @app.put("/players", status_code=status.HTTP_200_OK)
-def put_players (new_player: Player):
-    for i, existing_player in enumerate(players_db):
+def put_players (new_player: Post):
+    for i, existing_player in enumerate(posts_db):
         if existing_player.Number == new_player.Number:
             if existing_player != new_player:
-                players_db[i] = new_player
+                posts_db[i] = new_player
                 return {"message": "Joueur mis à jour", "player": new_player}
             else:
                 return {"message": "Aucune modification, joueur identique", "player": new_player}
 
-    players_db.append(new_player)
+    posts_db.append(new_player)
     return {"message": "Nouveau joueur ajouté", "player": new_player}
 
 
