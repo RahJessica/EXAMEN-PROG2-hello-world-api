@@ -20,66 +20,55 @@ def read_hello():
 def welcome_home():
     return HTMLResponse (
         """
-            <div>
-                <h1>Welcome home !</>
-            </div>
+            <!doctype html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8" />
+                    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <title>None</title>
+                </head>
+                <body>
+                    <h1>Welcome home!</h1>
+                </body>
+            </html>
         """
     )
-class WelcomeRequest(BaseModel):
-    name: str
 
-@app.post("/welcome")
-def welcome_user(data: WelcomeRequest):
-    return {"message": f"Welcome {data.name}"}
-
-#Q3
+#Q4
 class Post (BaseModel):
     author: str
     title: str
     content: str
 
-posts_db: List[Post] = []
+posts_db: List[Post] = [
+    Post(
+        author="Lucas Clavel",
+        title="Les temps d'automne",
+        content="Livre long"
+    )
+]
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def add_players (post: List[Post]):
+def post_posts (post: List[Post]):
     posts_db.extend(post)
     return posts_db
 
-
-@app.get("/players", status_code=status.HTTP_200_OK)
-def read_players ():
+#Q5
+@app.get("/posts", status_code=status.HTTP_200_OK)
+def get_posts ():
     return posts_db
 
-@app.put("/players", status_code=status.HTTP_200_OK)
-def put_players (new_player: Post):
-    for i, existing_player in enumerate(posts_db):
-        if existing_player.Number == new_player.Number:
-            if existing_player != new_player:
-                posts_db[i] = new_player
-                return {"message": "Joueur mis à jour", "player": new_player}
+#Q6
+@app.put("/posts", status_code=status.HTTP_200_OK)
+def put_posts (new_post: Post):
+    for i, existing_post in enumerate(posts_db):
+        if existing_post.Number == new_post.title:
+            if existing_post != new_post:
+                posts_db[i] = new_post
+                return {"message": "Post mis à jour", "post": new_post}
             else:
-                return {"message": "Aucune modification, joueur identique", "player": new_player}
+                return {"message": "Aucune modification, post identique", "post": new_post}
 
-    posts_db.append(new_player)
-    return {"message": "Nouveau joueur ajouté", "player": new_player}
-
-
-@app.put("/top-secret")
-def secret_key_verification (authorization: str = Header(...)):
-    if (authorization != "my-secret-key"):
-        return Response (
-            status_code=403,
-            media_type="text/plain"
-        )
-    else:
-        return {"message": "Accès autorisé au chemin top-secret"}
-
-@app.get("/verify-code")
-def read_secret_code (secret_code: int):
-    if(len(str(secret_code)) != 4):
-        return JSONResponse (
-            status_code=403,
-            media_type="text/plain",
-            content={"error": f"Il faut un code à 4 chiffres"}
-        )
-    return {"message": f"Code validé"}
+    posts_db.append(new_post)
+    return {"message": "Nouveau post ajouté", "post": new_post}
