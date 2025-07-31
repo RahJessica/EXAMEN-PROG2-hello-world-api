@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Hello world",
+			"name": "Hello Ryan",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {
 					"accept": true
@@ -59,7 +59,56 @@
 				}
 			},
 			"response": []
+		},
+
+		{
+			"name": "/top-secret",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "my-secret-key",
+						"type": "text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/top-secret",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"top-secret"
+					]
+				}
+			},
+			"response": []
+		},
+
+		{
+			"name": "/verify-code",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Secret-code",
+						"value": "1234",
+						"type": "text/plain"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/verify-code",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"verify-code"
+					]
+				}
+			},
+			"response": []
 		}
+
 	],
 	"variable": [
 		{
